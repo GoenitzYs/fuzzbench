@@ -13,3 +13,26 @@
 # limitations under the License.
 
 FROM gcr.io/fuzzbench/base-image
+
+RUN apt update && \
+    apt install -y wget && \
+    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    echo -e "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main \
+    \\ndeb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main \
+    \\n\\ndeb http://apt.llvm.org/focal/ llvm-toolchain-focal-15 main \
+    \ndeb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-15 main \
+    \n\ndeb http://apt.llvm.org/focal/ llvm-toolchain-focal-17 main \
+    \ndeb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-17 main" |tee /etc/apt/sources.list.d/llvm.list && \
+    apt update && \
+    apt install -y clang-12 clang-15 clang-17 && \
+    apt install -y libc++-12-dev && \ 
+    apt install -y libc++-15-dev && \
+    apt install -y libc++-17-dev
+
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install torch torchvision torchaudio
+COPY requireements.txt /
+RUN python3 -m pip install -r /requirements.txt
+
+ENV PATH="${PATH}:/usr/lib/llvm-12/bin"
+ENV LD_LIBRARY_PATH="/usr/lib/llvm-12/lib:${LD_LIBRARY_PATH}"

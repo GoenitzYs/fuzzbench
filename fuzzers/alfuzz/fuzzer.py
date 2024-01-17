@@ -28,8 +28,8 @@ def prepare_build_environment():
     utils.append_flags('CFLAGS', cflags)
     utils.append_flags('CXXFLAGS', cflags)
 
-    os.environ['CC'] = '/afl/afl-clang-fast'
-    os.environ['CXX'] = '/afl/afl-clang-fast++'
+    os.environ['CC'] = '/alfuzz/fuzzer/afl-clang-fast'
+    os.environ['CXX'] = '/alfuzz/fuzzer/afl-clang-fast++'
     # os.environ['FUZZER_LIB'] = '/libAFL.a'
 
 
@@ -41,8 +41,7 @@ def build():
 
     print('[post_build] Copying afl-fuzz to $OUT directory')
     # Copy out the afl-fuzz binary as a build artifact.
-    # shutil.copy('/afl/afl-fuzz', os.environ['OUT'])
-    shutil.copytree('/afl', os.environ['OUT'])
+    shutil.copytree('/alfuzz', os.environ['OUT'])
     shutil.copytree('/tmp/func_ll', os.environ['OUT'])
 
 
