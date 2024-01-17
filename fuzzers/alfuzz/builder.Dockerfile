@@ -17,12 +17,17 @@ FROM $parent_image
 
 # Download and compile AFL v2.57b.
 # Set AFL_NO_X86 to skip flaky tests.
+# RUN git clone \
+#         --depth 1 \
+#         --branch v2.57b \
+#         https://github.com/google/AFL.git /afl && \
+#     cd /afl && \
+#     CFLAGS= CXXFLAGS= AFL_NO_X86=1 make
 RUN git clone \
-        --depth 1 \
-        --branch v2.57b \
-        https://github.com/google/AFL.git /afl && \
+    https://github.com/GoenitzYS/ALFUZZ.git /afl && \
     cd /afl && \
-    CFLAGS= CXXFLAGS= AFL_NO_X86=1 make
+    CC=clang CFLAGS= CXXFLAGS= AFL_NO_X86=1 make && \
+    CC=clang make -C module/llvm_mode
 
 # Use afl_driver.cpp from LLVM as our fuzzing library.
 RUN apt-get update && \
